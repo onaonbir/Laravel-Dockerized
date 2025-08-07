@@ -60,6 +60,11 @@ services:
 
         networks:
             - dokploy-network
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.frontend-app.rule=Host(`laravel-dockerized.onaonbir.services`)
+            - traefik.http.routers.frontend-app.entrypoints=web
+            - traefik.http.services.frontend-app.loadbalancer.server.port=8080
         restart: unless-stopped
         deploy:
             replicas: 1

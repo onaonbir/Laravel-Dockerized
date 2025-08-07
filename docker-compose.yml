@@ -69,6 +69,8 @@ services:
             - AWS_USE_PATH_STYLE_ENDPOINT=${AWS_USE_PATH_STYLE_ENDPOINT}
             - VITE_APP_NAME=${VITE_APP_NAME}
         restart: unless-stopped
-
+networks:
+    dokploy-network:
+        external: true
 volumes:
     laravel_storage:

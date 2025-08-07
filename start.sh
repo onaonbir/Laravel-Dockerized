@@ -106,12 +106,6 @@ if [ ! -L /app/public/storage ]; then
     php artisan storage:link
 fi
 
-# Install Horizon assets
-echo "🌅 Installing Horizon assets..."
-php artisan horizon:publish --force
-
-# Clear Horizon cache
-php artisan horizon:clear
 
 echo "✅ Laravel application setup completed!"
 echo "🌟 Starting services..."

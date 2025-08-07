@@ -104,8 +104,6 @@ RUN php artisan config:cache && \
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 RUN chmod -R 775 /app/storage /app/bootstrap/cache
 
-# Expose port
-EXPOSE 80
 
 # Start script
 COPY start.sh /start.sh

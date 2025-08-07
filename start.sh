@@ -26,15 +26,6 @@ echo "DB_PORT: $DB_PORT"
 echo "DB_DATABASE: $DB_DATABASE"
 echo "DB_USERNAME: $DB_USERNAME"
 
-# Test network connectivity first
-echo "🌐 Testing network connectivity..."
-if ping -c 1 "$DB_HOST" > /dev/null 2>&1; then
-    echo "✅ Can ping database host: $DB_HOST"
-else
-    echo "❌ Cannot ping database host: $DB_HOST"
-    echo "🔍 Trying to resolve hostname..."
-    nslookup "$DB_HOST" || echo "❌ DNS resolution failed"
-fi
 
 # Wait for database connection with better error handling
 echo "🔌 Checking database connection..."

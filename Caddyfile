@@ -46,18 +46,19 @@
 
     # PHP-FPM with worker mode for better performance
     php_server {
-        worker_mode
-        num_threads 4
+        worker {
+            num 4
+        }
 
         # PHP environment variables
         env APP_ENV production
         env APP_DEBUG false
 
         # Split path info for Laravel routing
-        split_path .php
+        split .php
 
-        # Maximum request size (matches PHP settings)
-        max_body_size 100MB
+        # Root directory (redundant but explicit)
+        root /app/public
     }
 
     # Handle Laravel routes

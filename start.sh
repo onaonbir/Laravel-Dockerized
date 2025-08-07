@@ -20,6 +20,7 @@ echo "⏳ Waiting for external services..."
 
 # Debug environment
 echo "🔍 Database config:"
+echo "APP_URL: $APP_URL"
 echo "DB_HOST: $DB_HOST"
 echo "DB_PORT: $DB_PORT"
 echo "DB_DATABASE: $DB_DATABASE"

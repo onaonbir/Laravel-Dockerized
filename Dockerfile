@@ -76,7 +76,7 @@ RUN npm ci
 
 # Copy composer files
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+RUN composer install --no-dev --no-autoloader --prefer-dist
 
 # Copy application files
 COPY . .
@@ -96,10 +96,8 @@ COPY deployment/php.ini /usr/local/etc/php/php.ini
 COPY deployment/Caddyfile /etc/caddy/Caddyfile
 COPY deployment/supervisord.conf /app/supervisord.conf
 
-# Laravel optimizations
-RUN php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
+# DON'T cache Laravel configs during build - do it at runtime!
+# Laravel optimizations will be done in start.sh when DB is available
 
 # Create log directories and set permissions
 RUN mkdir -p /var/log/laravel /var/log/caddy /app/storage/logs \

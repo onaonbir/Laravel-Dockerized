@@ -30,6 +30,8 @@ Route::get('/test-route', function () {
 });
 
 
+
+
 // Resim indirme ve gösterme route'u
 Route::get('/download-image', function () {
     try {

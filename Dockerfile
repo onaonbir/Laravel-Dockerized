@@ -105,7 +105,7 @@ RUN mkdir -p /var/log/laravel /var/log/caddy /app/storage/logs \
     && chmod -R 775 /app/storage /app/bootstrap/cache
 
 # Expose ports
-EXPOSE 8080 2019
+EXPOSE 8080
 
 # Volume mount points
 VOLUME ["/app/storage", "/var/log/laravel", "/var/log/caddy"]

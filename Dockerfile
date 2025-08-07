@@ -93,7 +93,7 @@ RUN php artisan octane:install --server=frankenphp --no-interaction
 
 # Copy configuration files
 COPY php.ini /usr/local/etc/php/php.ini
-COPY supervisord-octane.conf /app/supervisord.conf
+COPY supervisord.conf /app/supervisord.conf
 
 # Laravel optimizations
 RUN php artisan config:cache && \

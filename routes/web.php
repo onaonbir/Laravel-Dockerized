@@ -9,6 +9,7 @@ Route::get('/', function () {
 
 Route::get('/php-info', function () {
     phpinfo();
+    exit; // Önemli: Laravel'in response handling'ini bypass et
 });
 
 Route::get('/test-route', function () {

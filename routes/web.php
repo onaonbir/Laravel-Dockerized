@@ -7,6 +7,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/php-info', function () {
+    phpinfo();
+});
+
 Route::get('/test-route', function () {
     return response()->json([
         'message' => 'Laravel is working!',

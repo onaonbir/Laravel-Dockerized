@@ -96,7 +96,7 @@ fi
 
 # Run migrations
 echo "📊 Running database migrations..."
-php artisan migrate --force
+php artisan migrate
 
 # Clear and optimize for production
 echo "🗂️ Optimizing for production..."

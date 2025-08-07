@@ -95,6 +95,10 @@ if [ -z "$APP_KEY" ]; then
     php artisan key:generate --force
 fi
 
+# Ensure migration table exists
+echo "Creating migration table if not exists..."
+php artisan migrate:install
+
 # Run migrations
 echo "📊 Running database migrations..."
 php artisan migrate --force

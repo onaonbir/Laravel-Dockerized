@@ -29,16 +29,6 @@ Route::get('/test-route', function () {
     ]);
 });
 
-Route::fallback(function () {
-    return response()->json([
-        'error' => '404 - Route not found',
-        'requested_path' => request()->path(),
-        'available_routes' => collect(Route::getRoutes())->map(function($route) {
-            return $route->uri();
-        })->toArray()
-    ], 404);
-});
-
 
 // Resim indirme ve gösterme route'u
 Route::get('/download-image', function () {

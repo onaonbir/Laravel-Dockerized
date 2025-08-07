@@ -6,7 +6,7 @@ services:
             context: .
             dockerfile: Dockerfile
         ports:
-            - "8080:8080"
+            - 8080
         environment:
             # Dokploy UI'dan environment variables'ları çek
             - APP_NAME=${APP_NAME:-Laravel}
@@ -61,10 +61,11 @@ services:
         networks:
             - dokploy-network
         labels:
-            - traefik.enable=true
-            - traefik.http.routers.frontend-app.rule=Host(`laravel-dockerized.onaonbir.services`)
-            - traefik.http.routers.frontend-app.entrypoints=web
-            - traefik.http.services.frontend-app.loadbalancer.server.port=8080
+            - "traefik.enable=true"
+            - "traefik.http.routers.frontend-app.rule=Host(`laravel-dockerized.onaonbir.services`)"
+            - "traefik.http.routers.frontend-app.entrypoints=websecure"
+            - "traefik.http.routers.frontend-app.tls.certResolver=letsencrypt"
+            - "traefik.http.services.frontend-app.loadbalancer.server.port=8080"
         restart: unless-stopped
         deploy:
             replicas: 1

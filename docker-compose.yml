@@ -6,7 +6,7 @@ services:
             context: .
             dockerfile: Dockerfile
         ports:
-            - 8081:8081
+            - 80:80
         environment:
             # Dokploy UI'dan environment variables'ları çek
             - APP_NAME=${APP_NAME:-Laravel}
@@ -18,7 +18,7 @@ services:
             # Octane settings
             - OCTANE_SERVER=${OCTANE_SERVER:-frankenphp}
             - OCTANE_HOST=${OCTANE_HOST:-0.0.0.0}
-            - OCTANE_PORT=${OCTANE_PORT:-8081}
+            - OCTANE_PORT=${OCTANE_PORT:-80}
             - OCTANE_WORKERS=${OCTANE_WORKERS:-4}
             - OCTANE_MAX_REQUESTS=${OCTANE_MAX_REQUESTS:-1000}
 
@@ -65,7 +65,7 @@ services:
             - traefik.docker.network=dokploy-network
             - traefik.http.routers.laravel-app.rule=Host(`hehetest.onaonbir.services`)
             - traefik.http.routers.laravel-app.entrypoints=web
-            - traefik.http.services.laravel-app.loadbalancer.server.port=8081
+            - traefik.http.services.laravel-app.loadbalancer.server.port=80
             - traefik.http.routers.laravel-app.service=laravel-app
         restart: unless-stopped
         deploy:

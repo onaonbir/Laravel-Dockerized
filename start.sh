@@ -84,11 +84,6 @@ if [ ! -L /app/public/storage ]; then
     php artisan storage:link
 fi
 
-# Install Horizon assets
-echo "🌅 Installing Horizon assets..."
-php artisan horizon:publish --force
-php artisan horizon:clear
-
 echo "✅ Laravel Octane application setup completed!"
 echo "🐘 Starting Octane with FrankenPHP server..."
 

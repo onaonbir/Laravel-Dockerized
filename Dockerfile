@@ -72,7 +72,13 @@ WORKDIR /app
 
 # Copy package files first (for better caching)
 COPY package*.json ./
-RUN npm ci --only=production
+
+# Install npm dependencies (handle missing package-lock.json)
+RUN if [ -f "package-lock.json" ]; then \
+        npm ci --omit=dev; \
+    else \
+        npm install --omit=dev; \
+    fi
 
 # Dependency files first (for better caching)
 COPY composer.json composer.lock ./
@@ -81,8 +87,13 @@ RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
 # Copy application
 COPY . .
 
-# Frontend build
-RUN npm run build
+# Frontend build (only if package.json exists and has build script)
+RUN if [ -f "package.json" ] && npm run | grep -q "build"; then \
+        npm run build; \
+    else \
+        echo "No build script found, creating empty manifest"; \
+        mkdir -p public/build && echo '{}' > public/build/manifest.json; \
+    fi
 
 # Finish composer installation
 RUN composer dump-autoload --optimize --no-dev

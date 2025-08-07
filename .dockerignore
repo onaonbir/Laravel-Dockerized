@@ -1,6 +1,7 @@
 node_modules
 vendor
 .git
+.env
 .env.local
 .env.*.local
 npm-debug.log*
@@ -12,3 +13,5 @@ coverage
 .nyc_output
 tests
 .phpunit.result.cache
+package-lock.json
+yarn.lock

@@ -1,10 +1,9 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Starting Laravel application..."
+echo "🚀 Starting Laravel Octane + FrankenPHP application..."
 
-# Copy configuration files
-cp /app/Caddyfile /etc/caddy/Caddyfile
+# Copy supervisor config
 cp /app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Create necessary directories
@@ -19,15 +18,14 @@ chmod -R 775 /app/storage /app/bootstrap/cache
 
 echo "⏳ Waiting for external services..."
 
-# Debug - Print environment variables
+# Debug environment
 echo "🔍 Database config:"
 echo "DB_HOST: $DB_HOST"
 echo "DB_PORT: $DB_PORT"
 echo "DB_DATABASE: $DB_DATABASE"
 echo "DB_USERNAME: $DB_USERNAME"
 
-
-# Wait for database connection with better error handling
+# Wait for database connection
 echo "🔌 Checking database connection..."
 timeout=60
 counter=0
@@ -47,25 +45,14 @@ try {
 done
 
 if [ $counter -eq $timeout ]; then
-    echo "❌ Database connection timeout after $timeout attempts"
-    echo "🔍 Final connection attempt with detailed error..."
-    php -r "
-    try {
-        \$pdo = new PDO('mysql:host=$DB_HOST;port=$DB_PORT;dbname=$DB_DATABASE', '$DB_USERNAME', '$DB_PASSWORD');
-        echo 'Connection successful!';
-    } catch (Exception \$e) {
-        echo 'Final error: ' . \$e->getMessage();
-    }
-    "
+    echo "❌ Database connection timeout"
     exit 1
 fi
 
 echo "✅ Database connection established"
 
-# Skip Redis check for now, continue without it
+# Skip Redis check for debugging
 echo "⚠️ Skipping Redis check for debugging"
-
-echo "✅ External services are ready"
 
 # Run Laravel commands
 echo "🔄 Running Laravel setup commands..."
@@ -80,7 +67,7 @@ fi
 echo "📊 Running database migrations..."
 php artisan migrate --force
 
-# Clear and cache configurations for production
+# Clear and optimize for production
 echo "🗂️ Optimizing for production..."
 php artisan config:clear
 php artisan route:clear
@@ -91,15 +78,19 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# Create storage link if not exists
+# Create storage link
 if [ ! -L /app/public/storage ]; then
     echo "🔗 Creating storage link..."
     php artisan storage:link
 fi
 
+# Install Horizon assets
+echo "🌅 Installing Horizon assets..."
+php artisan horizon:publish --force
+php artisan horizon:clear
 
-echo "✅ Laravel application setup completed!"
-echo "🌟 Starting services..."
+echo "✅ Laravel Octane application setup completed!"
+echo "🐘 Starting Octane with FrankenPHP server..."
 
 # Start supervisor
 exec supervisord -c /etc/supervisor/supervisord.conf

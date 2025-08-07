@@ -1,0 +1,75 @@
+{
+    auto_https off
+    admin off
+
+    # Global options
+    servers {
+        max_header_size 16KB
+    }
+}
+
+:8080 {
+    root * /app/public
+
+    # Security headers
+    header {
+        # Remove server info
+        -Server
+
+        # Security headers
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+
+        # Cache control for static assets
+        Cache-Control "public, max-age=31536000" {
+            path *.css *.js *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.otf
+        }
+    }
+
+    # Compression
+    encode {
+        gzip 6
+        # File types to compress
+        match {
+            header Content-Type text/*
+            header Content-Type application/json*
+            header Content-Type application/javascript*
+            header Content-Type application/xhtml+xml*
+            header Content-Type application/atom+xml*
+            header Content-Type application/rss+xml*
+        }
+        minimum_length 1000
+    }
+
+    # PHP-FPM with worker mode for better performance
+    php_server {
+        worker_mode
+        num_threads 4
+
+        # PHP environment variables
+        env APP_ENV production
+        env APP_DEBUG false
+
+        # Split path info for Laravel routing
+        split_path .php
+
+        # Maximum request size (matches PHP settings)
+        max_body_size 100MB
+    }
+
+    # Handle Laravel routes
+    try_files {path} {path}/ /index.php?{query}
+
+    # Static file serving
+    file_server
+
+    # Logging
+    log {
+        output stdout
+        format console
+        level INFO
+    }
+}

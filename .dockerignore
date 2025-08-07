@@ -1,0 +1,14 @@
+node_modules
+vendor
+.git
+.env.local
+.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+*.log
+coverage
+.nyc_output
+tests
+.phpunit.result.cache

@@ -6,7 +6,7 @@ services:
             context: .
             dockerfile: Dockerfile
         ports:
-            - "8080:8080"
+            - 8081
         environment:
             # Dokploy UI'dan environment variables'ları çek
             - APP_NAME=${APP_NAME:-Laravel}

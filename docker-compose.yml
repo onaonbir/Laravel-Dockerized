@@ -66,12 +66,6 @@ services:
             restart_policy:
                 condition: on-failure
                 max_attempts: 3
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-            interval: 30s
-            timeout: 10s
-            retries: 3
-            start_period: 60s
 
 networks:
     dokploy-network:

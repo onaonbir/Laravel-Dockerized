@@ -14,9 +14,13 @@ services:
             - APP_KEY=${APP_KEY}
             - APP_DEBUG=${APP_DEBUG:-false}
             - APP_URL=${APP_URL:-http://localhost:8080}
-            -
+
             # Octane settings
             - OCTANE_SERVER=${OCTANE_SERVER:-frankenphp}
+            - OCTANE_HOST=${OCTANE_HOST:-0.0.0.0}
+            - OCTANE_PORT=${OCTANE_PORT:-8080}
+            - OCTANE_WORKERS=${OCTANE_WORKERS:-4}
+            - OCTANE_MAX_REQUESTS=${OCTANE_MAX_REQUESTS:-1000}
 
             # Database
             - DB_CONNECTION=${DB_CONNECTION:-mysql}

@@ -13,4 +13,45 @@ coverage
 .nyc_output
 tests
 .phpunit.result.cache
-# yarn.lock (sadece npm kullanıyoruz)
+yarn.lock
+
+# Exclude deployment folder from being copied during build
+# (We'll copy specific files individually)
+deployment/README.md
+
+# Exclude local development files
+docker-compose.yml
+docker-compose.*.yml
+Makefile
+*.md
+.editorconfig
+.gitignore
+.gitattributes
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+
+# Laravel specific
+storage/app/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+storage/logs/*
+bootstrap/cache/*
+
+# But keep these important directories
+!storage/app/.gitignore
+!storage/framework/cache/.gitignore
+!storage/framework/sessions/.gitignore
+!storage/framework/testing/.gitignore
+!storage/framework/views/.gitignore
+!storage/logs/.gitignore
+!bootstrap/cache/.gitignore

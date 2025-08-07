@@ -1,0 +1,131 @@
+{
+    # Global options
+    admin :2019
+
+    # Logging
+    log {
+        output file /var/log/caddy/access.log
+        format json
+        level INFO
+    }
+
+    # Error logging
+    log {
+        output file /var/log/caddy/error.log
+        format json
+        level ERROR
+    }
+
+    # Security headers
+    header {
+        # Remove server info
+        -Server
+
+        # Security headers
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy strict-origin-when-cross-origin
+
+        # HSTS (enable when using HTTPS)
+        # Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    }
+}
+
+# Main server block
+:8080 {
+    # Document root
+    root * /app/public
+
+    # Access logging
+    log {
+        output file /var/log/caddy/laravel-access.log {
+            roll_size 100MB
+            roll_keep 5
+            roll_keep_for 720h
+        }
+        format json {
+            time_format iso8601
+            message_key msg
+        }
+        level INFO
+    }
+
+    # Error logging
+    log {
+        output file /var/log/caddy/laravel-error.log {
+            roll_size 50MB
+            roll_keep 5
+            roll_keep_for 720h
+        }
+        format json
+        level ERROR
+    }
+
+    # Enable gzip compression
+    encode gzip
+
+    # Handle static files
+    @static {
+        file
+        path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.woff2 *.ttf *.eot *.webp
+    }
+
+    handle @static {
+        header Cache-Control "public, max-age=31536000, immutable"
+        file_server
+    }
+
+    # Handle storage files
+    @storage {
+        path /storage/*
+    }
+
+    handle @storage {
+        header Cache-Control "public, max-age=86400"
+        file_server
+    }
+
+    # Health check endpoint
+    handle /health {
+        respond "OK" 200
+    }
+
+    # FrankenPHP with Octane
+    @php {
+        not file
+        not path /health
+    }
+
+    handle @php {
+        # Set timeout
+        timeout 300s
+
+        # PHP-FPM / FrankenPHP
+        php_server {
+            # Split path for clean URLs
+            split_path .php
+        }
+    }
+
+    # Fallback file server
+    file_server
+
+    # Security: Hide sensitive files
+    @sensitive {
+        path /.env* /composer.* /package.* /artisan /.git* /storage/logs/*
+    }
+
+    handle @sensitive {
+        respond 404
+    }
+
+    # Block access to PHP files in storage
+    @phpfiles {
+        path /storage/*.php
+    }
+
+    handle @phpfiles {
+        respond 403
+    }
+}

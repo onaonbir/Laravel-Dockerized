@@ -91,24 +91,29 @@ RUN composer dump-autoload --optimize --no-dev
 RUN composer require laravel/octane --no-scripts
 RUN php artisan octane:install --server=frankenphp --no-interaction
 
-# Copy configuration files
-COPY php.ini /usr/local/etc/php/php.ini
-COPY supervisord.conf /app/supervisord.conf
+# Copy deployment configuration files
+COPY deployment/php.ini /usr/local/etc/php/php.ini
+COPY deployment/Caddyfile /etc/caddy/Caddyfile
+COPY deployment/supervisord.conf /app/supervisord.conf
 
 # Laravel optimizations
 RUN php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache
 
-# Set permissions
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
-RUN chmod -R 775 /app/storage /app/bootstrap/cache
+# Create log directories and set permissions
+RUN mkdir -p /var/log/laravel /var/log/caddy /app/storage/logs \
+    && chown -R www-data:www-data /app/storage /app/bootstrap/cache /var/log/laravel \
+    && chmod -R 775 /app/storage /app/bootstrap/cache
 
-# Expose port
-EXPOSE 8080
+# Expose ports
+EXPOSE 8080 2019
+
+# Volume mount points
+VOLUME ["/app/storage", "/var/log/laravel", "/var/log/caddy"]
 
 # Start script
-COPY start.sh /start.sh
+COPY deployment/start.sh /start.sh
 RUN chmod +x /start.sh
 
 CMD ["/start.sh"]

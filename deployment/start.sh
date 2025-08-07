@@ -11,9 +11,12 @@ mkdir -p /app/storage/logs
 mkdir -p /app/storage/framework/cache
 mkdir -p /app/storage/framework/sessions
 mkdir -p /app/storage/framework/views
+mkdir -p /app/storage/app/public
+mkdir -p /var/log/laravel
+mkdir -p /var/log/caddy
 
 # Set proper permissions
-chown -R www-data:www-data /app/storage /app/bootstrap/cache
+chown -R www-data:www-data /app/storage /app/bootstrap/cache /var/log/laravel
 chmod -R 775 /app/storage /app/bootstrap/cache
 
 echo "⏳ Waiting for external services..."
@@ -52,8 +55,35 @@ fi
 
 echo "✅ Database connection established"
 
-# Skip Redis check for debugging
-echo "⚠️ Skipping Redis check for debugging"
+# Check Redis connection if configured
+if [ ! -z "$REDIS_HOST" ]; then
+    echo "🔌 Checking Redis connection..."
+    timeout=30
+    counter=0
+    until php -r "
+    try {
+        \$redis = new Redis();
+        \$redis->connect('$REDIS_HOST', '$REDIS_PORT');
+        echo 'Redis connection successful';
+        exit(0);
+    } catch (Exception \$e) {
+        echo 'Redis error: ' . \$e->getMessage();
+        exit(1);
+    }
+    " || [ $counter -eq $timeout ]; do
+      echo "Redis not ready, waiting... ($counter/$timeout)"
+      sleep 1
+      ((counter++))
+    done
+
+    if [ $counter -eq $timeout ]; then
+        echo "⚠️ Redis connection timeout, continuing without Redis"
+    else
+        echo "✅ Redis connection established"
+    fi
+else
+    echo "⚠️ Redis not configured, skipping check"
+fi
 
 # Run Laravel commands
 echo "🔄 Running Laravel setup commands..."
@@ -85,8 +115,13 @@ if [ ! -L /app/public/storage ]; then
     php artisan storage:link
 fi
 
+# Set log file permissions
+touch /var/log/laravel/laravel.log
+chown www-data:www-data /var/log/laravel/laravel.log
+chmod 664 /var/log/laravel/laravel.log
+
 echo "✅ Laravel Octane application setup completed!"
-echo "🐘 Starting Octane with FrankenPHP server..."
+echo "📊 Starting log monitoring and application services..."
 
 # Start supervisor
 exec supervisord -c /etc/supervisor/supervisord.conf

@@ -9,6 +9,12 @@ services:
             - "8080:8080"
         networks:
             - dokploy-network
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.laravel-hehe.rule=Host(`hehetest.onaonbir.services`)"
+            - "traefik.http.routers.laravel-hehe.entrypoints=websecure"
+            - "traefik.http.routers.laravel-hehe.tls.certResolver=letsencrypt"
+            - "traefik.http.services.laravel-hehe.loadbalancer.server.port=8080"
         volumes:
             - laravel_storage:/app/storage
         environment:

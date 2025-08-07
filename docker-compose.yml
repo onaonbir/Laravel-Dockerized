@@ -6,7 +6,7 @@ services:
             context: .
             dockerfile: Dockerfile
         ports:
-            - "8080:8080"
+            - 8081
         environment:
             # Dokploy UI'dan environment variables'ları çek
             - APP_NAME=${APP_NAME:-Laravel}
@@ -18,7 +18,7 @@ services:
             # Octane settings
             - OCTANE_SERVER=${OCTANE_SERVER:-frankenphp}
             - OCTANE_HOST=${OCTANE_HOST:-0.0.0.0}
-            - OCTANE_PORT=${OCTANE_PORT:-8080}
+            - OCTANE_PORT=${OCTANE_PORT:-8081}
             - OCTANE_WORKERS=${OCTANE_WORKERS:-4}
             - OCTANE_MAX_REQUESTS=${OCTANE_MAX_REQUESTS:-1000}
 
